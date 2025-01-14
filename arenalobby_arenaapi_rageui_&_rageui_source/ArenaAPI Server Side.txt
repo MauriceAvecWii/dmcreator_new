@@ -1,0 +1,330 @@
+Server Side
+
+#Function
+local ArenaAPI = exports.ArenaAPI
+
+---Create a new arena instant
+---@param identifier string Arena identifier
+---@param source integer Arena host source
+---@return table Module of the arena
+ArenaAPI:CreateArena(identifier, source)
+
+---@param identifier string Arena identifier
+---@return table An instance of arena
+ArenaAPI:GetArenaInstance(identifier)
+
+---@return table An array of arenas
+ArenaAPI:GetArenaList()
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:DoesArenaExists(identifier)
+
+---@param identifier string Arena identifier
+---@return table
+ArenaAPI:GetPlayerList(identifier)
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsArenaBusy(identifier)
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsArenaActive(identifier) -- return boolean
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsArenaInactive(identifier) -- return boolean
+
+---@param identifier string Arena identifier
+---@return integer
+ArenaAPI:GetPlayerCount(identifier)
+
+---@param identifier string Arena identifier
+---@return string State of arena
+---ArenaInactive - No one is in a lobby or arena
+---ArenaActive - People are in lobby
+---ArenaBusy - People playing already
+ArenaAPI:GetArenaState(identifier)
+
+---@param source integer Player server id
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsPlayerInArena(source, identifier)
+
+---@param source integer Player server id
+---@return boolean?
+ArenaAPI:IsPlayerInAnyArena(source)
+
+---@param source integer Player server id
+---@return string Identifier of the arena, if he isn't anywhere it will return "none"
+ArenaAPI:GetPlayerArena(source)
+
+Set Information Arena Instant
+---Create example new arena instant
+local arenaInstant = exports.ArenaAPI:CreateArena(identifier, source)
+
+---Set how many people can join to the arena
+---@param number integer
+arenaInstant.SetMaximumCapacity(number)
+
+---Set how many players need to join to start game
+---@param number integer
+arenaInstant.SetMinimumCapacity(number)
+
+---How many rounds this arena will have ?
+---@param number integer
+arenaInstant.SetArenaMaxRounds(number)
+
+---@param name string
+arenaInstant.SetArenaLabel(name)
+
+---When players join to the arena it will create their own world with other players
+---@param result boolean
+arenaInstant.SetOwnWorld(result)
+
+---This will set for how long the arena can go, if the value isnt set the arena will be there forever
+---@param second integer
+arenaInstant.SetMaximumArenaTime(second)
+
+---How long player have to wait in lobby before letting him into the game, if player leave the lobby the timer will reset to this value.
+---@param second integer
+arenaInstant.SetMaximumLobbyTime(second)
+
+---If true player will be able to acces arena from command /arena join [identifier]
+---If false that means you will have to use somewhere else this function "AddPlayer(source)"
+---@param value boolean
+arenaInstant.SetArenaPublic(value)
+
+---Set cover image of arena
+---@param url string
+arenaInstant.SetArenaImageUrl(url)
+
+---if you have something like winner cutscene, set this on false, but you have to send player into world 0 by your code.
+---@param result boolean
+arenaInstant.RemoveWorldAfterWin(result)
+
+---Call to reset arena
+arenaInstant.Reset()
+
+---Call to end arena and remove
+arenaInstant.Destroy()
+
+#Get Information From Arena Instant
+---Create example new arena instant
+local arenaInstant = exports.ArenaAPI:CreateArena(identifier, source)
+
+---@return integer Number of arena maximum capacity
+arenaInstant.GetMaximumCapacity()
+
+---@return integer Number of arena minimum capacity
+arenaInstant.GetMinimumCapacity()
+
+---@return integer Number of arena minimum rounds
+arenaInstant.GetMaximumRounds()
+
+---@return integer Number of arena current round
+arenaInstant.GetCurrentRound()
+
+---@return integer Number of total player in arena
+arenaInstant.GetPlayerCount()
+
+---@return string Arena identifier name
+arenaInstant.GetArenaIdentifier()
+
+---@return string Arena label name
+arenaInstant.GetArenaLabel()
+
+---@return table List of players data
+arenaInstant.GetPlayerList()
+
+---@return boolean
+---@return integer Id of world
+arenaInstant.GetOwnWorld()
+
+---Can acces the arena with command /minigame)
+---@return boolean
+arenaInstant.IsArenaPublic()
+
+#Player Manipulation In Arena Instant
+---Create example new arena instant
+local arenaInstant = exports.ArenaAPI:CreateArena(identifier, source)
+
+---Add player to arena instant
+---@param source integer Player server id
+arenaInstant.AddPlayer(source)
+
+---Remove player from arena instant
+---@param source integer Player server id
+arenaInstant.RemovePlayer(source)
+
+---Init player score value
+---@param source integer Player server id
+---@param key string Name of score
+---@param value integer Value number of score
+arenaInstant.SetPlayerScore(source, key, value)
+
+---Get player score by key
+---@param source integer Player server id
+---@param key string Name of score
+---@return integer Player score
+arenaInstant.GetPlayerScore(source, key)
+
+---Add player score
+---@param source integer Player server id
+---@param key string Name of score
+---@param value integer How many score to add
+arenaInstant.GivePlayerScore(source, key, value)
+
+---@param source integer Player server id
+---@param key string Name of score
+---@param value integer How many score to remove
+arenaInstant.RemovePlayerScore(source, key, value)
+
+---Check player score key does exist?
+---@param source integer Player server id
+---@param key string Name of score
+---@return boolean?
+arenaInstant.PlayerScoreExists(source, key)
+
+---Remove score data by key
+---@param source integer Player server id
+---@param key string Name of score
+arenaInstant.DeleteScore(source, key)
+
+#Event For Arena Instant
+---Create example new arena instant
+local arenaInstant = exports.ArenaAPI:CreateArena(identifier, source)
+
+---Called whenever someone join arena
+---@param cb function Callback function
+arenaInstant.OnPlayerJoinLobby(function(source, data)
+    data.MaximumCapacity -- integer
+    data.MinimumCapacity -- integer
+    data.CurrentCapacity -- integer
+    data.MaximumRoundSaved = -- integer
+    data.CurrentRound -- integer
+    data.DeleteWorldAfterWin -- boolean?
+    data.OwnWorld -- boolean?
+    data.OwnWorldID -- integer
+    data.ArenaLabel = -- string
+    data.ArenaIdentifier -- string
+    data.MaximumArenaTime = -- integer
+    data.MaximumArenaTimeSaved = -- integer
+    data.MaximumLobbyTimeSaved -- integer
+    data.MaximumLobbyTime -- integer
+    data.ArenaIsPublic -- boolean?
+    data.ArenaImageUrl = -- string
+    data.CanJoinAfterStart -- boolean?
+    data.Password = -- string
+    data.PlayerList = -- table
+    data.PlayerScoreList = -- table
+    data.PlayerNameList = -- table
+    data.PlayerAvatar = -- table
+    
+    data.ArenaState = -- string
+    ---ArenaInactive - No one is in a lobby or arena
+    ---ArenaActive - People are in lobby
+    ---ArenaBusy - People playing already
+end)
+
+---Called whenever player leave arena The array data returns
+---@param cb function Callback function
+arenaInstant.OnPlayerExitLobby(function(source, data)
+end)
+
+---Call on start started after countdown
+---@param cb function Callback function
+arenaInstant.OnArenaStart(function(data)
+end)
+
+---Call on arena timed or .Destroy()
+---@param cb function Callback function
+arenaInstant.OnArenaEnd(function(data)
+end)
+
+---Call on arena round ending
+---@param cb function Callback function
+arenaInstant.OnArenaRoundEnd(function(source, data)
+end)
+
+---if the event is join/leave there is first argument source, second is arena instance for others such a like end,start etc, there is only one argument, and thats the arena instance.
+---@param eventName string Event handle name 'join, leave, end, roundend, start'
+---@param cb function Callback function
+arenaInstant.On(eventName, function(source, data)
+end)
+
+#Example
+local ArenaHelper = exports.ArenaAPI -- Get ArenaAPI library
+
+function CreateNewLobby(hostShource)
+	local myArena = ArenaHelper:CreateArena("MyArena", hostShource) -- Create new arena name MyArena and get arena instance
+	myArena.SetMinimumCapacity(2)                                 -- Set minimum to start
+	myArena.SetMaximumCapacity(20)                                -- Set maximum player
+	myArena.SetMaximumLobbyTime(20)
+	myArena.SetMaximumArenaTime(60 * 60)
+	myArena.SetJoinAfterStart(true)
+	myArena.SetArenaPublic(true)
+	myArena.SetArenaImageUrl("https://opengraph.githubassets.com/cfe949f9aef1cfda8a40dad85d0647365ea85c72a257be6bec3c73026764781d/chaixshot/ArenaLobby")
+	myArena.SetOwnWorld(true)
+	myArena.RemoveWorldAfterWin(true)
+	myArena.AddPlayer(hostShource)
+	-- myArena.SetPassword("12345")
+
+	myArena.OnArenaStart(function(data)
+		for src, data in pairs(data.PlayerList)
+			myArena.SetPlayerScore(src, "kill", 1)
+			myArena.SetPlayerScore(src, "death", 1)
+		end
+	end)
+
+	myArena.OnArenaEnd(function(data) -- Call on myArena.Destroy()
+
+	end)
+
+	myArena.OnPlayerJoinLobby(function(source, data)
+
+	end)
+
+	myArena.OnPlayerExitLobby(function(source, data)
+		if data.ArenaState == "ArenaActive" then
+			if data.CurrentCapacity <= 0 then
+				myArena.Destroy()
+			end
+		end
+	end)
+end
+
+RegisterNetEvent("CreateNewLobby")
+AddEventHandler("CreateNewLobby", function()
+	CreateNewLobby(source)
+end)
+
+function SetArenaBarBar()
+	local Gungame = ArenaHelper:GetArenaInstance("MyArena") -- Get arena instance name MyArena
+	local isOwnworld, ownWorldID = Gungame .GetOwnWorld()
+	
+	Gungame.SetArenaLabel("Gungame arena #1")             -- Set new arena label
+	Gungame.SetArenaImageUrl("https://static.wikia.nocookie.net/callofduty/images/1/13/GunGame_Gamemode_Icon_MP_MWIII.png/revision/latest/scale-to-width-down/175?cb=20240106190248")
+
+	Gungame.OnPlayerJoinLobby(function(source, data) -- Add handle event on player joining arena
+		TriggerClientEvent("showNotification", data.source, "Welcome to the arena: "..data.ArenaLabel)
+	end)
+
+	Gungame.On("join", function(source, data) -- Add handle event on player joining arena
+		TriggerClientEvent("showNotification", source, "Welcome to the arena: "..data.ArenaLabel)
+	end)
+
+	-- Citizen.SetTimeout(60 * 60 * 1000, function()
+		-- Gungame.Destroy()
+	-- end)
+	
+	for source, data in pairs(Gungame.GetPlayerList()do
+		arenaInstant.GivePlayerScore(source, "death", math.random(1, 10))
+	end
+end
+
+RegisterNetEvent("SetArenaBarBar")
+AddEventHandler("SetArenaBarBar", function()
+	SetArenaBarBar()
+end)

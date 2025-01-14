@@ -1,0 +1,167 @@
+#Function
+
+local ArenaAPI = exports.ArenaAPI
+
+---@return table List of arena in active
+ArenaAPI:GetArenaList()
+
+---Get arena instant
+---@param identifier string Arena identifier
+---@return table Arena instant
+ArenaAPI:GetArena(identifier)
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:DoesArenaExists(identifier)
+
+---@param identifier string Arena identifier
+---@return table List of player in arena
+ArenaAPI:GetPlayerList(identifier)
+
+---@return boolean?
+ArenaAPI:IsPlayerInAnyArena()
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsArenaBusy(identifier)
+
+---@return table Player list
+ArenaAPI:GetPlayerListArena()
+
+---@param identifier string Arena identifier
+---@return boolean?
+ArenaAPI:IsPlayerInArena(identifier)
+
+---@param identifier string Arena identifier
+---@return string
+ArenaAPI:GetArenaLabel(identifier)
+
+---@param identifier string Arena identifier
+---@return integer
+ArenaAPI:GetArenaMaximumSize(identifier)
+
+---@param identifier string Arena identifier
+---@return integer
+ArenaAPI:GetArenaMinimumSize(identifier)
+
+---@param identifier string Arena identifier
+---@return integer
+ArenaAPI:GetArenaCurrentSize(identifier)
+
+---@param identifier string Arena identifier
+---@return table [identifier, label, maximumCapacity, minimumCapacity, currentCapacity]
+ArenaAPI:GetCurrentArenaData(identifier)
+
+---@return string Current player arena identifier
+ArenaAPI:GetCurrentArenaIdentifier()
+
+---@return string Current player arena identifier
+ArenaAPI:GetPlayerArena()
+
+#Event
+---Called whenever someone join arena
+---@param identifier string Arena identifier
+---@param cb function Callback function
+exports.ArenaAPI.OnPlayerJoinLobby(identifier, function(data)
+    data.MaximumCapacity -- integer
+    data.MinimumCapacity -- integer
+    data.CurrentCapacity -- integer
+    data.MaximumRoundSaved = -- integer
+    data.CurrentRound -- integer
+    data.DeleteWorldAfterWin -- boolean?
+    data.OwnWorld -- boolean?
+    data.OwnWorldID -- integer
+    data.ArenaLabel = -- string
+    data.ArenaIdentifier -- string
+    data.MaximumArenaTime = -- integer
+    data.MaximumArenaTimeSaved = -- integer
+    data.MaximumLobbyTimeSaved -- integer
+    data.MaximumLobbyTime -- integer
+    data.ArenaIsPublic -- boolean?
+    data.ArenaImageUrl = -- string
+    data.CanJoinAfterStart -- boolean?
+    data.Password = -- string
+    data.PlayerList = -- table
+    data.PlayerScoreList = -- table
+    data.PlayerNameList = -- table
+    data.PlayerAvatar = -- table
+    
+    data.ArenaState = -- string
+    ---ArenaInactive - No one is in a lobby or arena
+    ---ArenaActive - People are in lobby
+    ---ArenaBusy - People playing already
+end)
+
+---Called whenever player leave arena
+---@param identifier string Arena identifier
+---@param cb function Callback function
+exports.ArenaAPI.OnPlayerExitLobby(identifier, function(data)
+end)
+
+---Called whenever arena started game
+---@param identifier string Arena identifier
+---@param cb function Callback function
+exports.ArenaAPI.OnArenaStart(identifier, function(data)
+end)
+
+---Called after arena runs out of time or player achieve enough points
+---@param identifier string Arena identifier
+---@param cb function Callback function
+exports.ArenaAPI.OnArenaEnd(identifier, function(data)
+end)
+
+---@param identifier string Arena identifier
+---@param cb function Callback function
+exports.ArenaAPI.OnArenaRoundEnd(identifier, function(data)
+end)
+
+---@param identifier string Arena identifier
+---@param eventName string Event handle 'roundend, join, leave, start, end'
+---@param cb function Callback function
+exports.ArenaAPI.On(identifier, eventName, function(data)
+end)
+
+#Example
+local ArenaHelper = exports.ArenaAPI -- Get ArenaAPI library
+
+if ArenaHelper.DoesArenaExists("MyArena") then
+   ArenaHelper.OnArenaStart("MyArena", function(data)
+
+   end)
+
+   ArenaHelper.OnArenaEnd("MyArena", function(data)
+
+   end)
+
+   ArenaHelper.OnPlayerJoinLobby("MyArena", function(data)
+      if data.ArenaState == "ArenaActive" then
+      
+      end
+   end)
+
+   ArenaHelper.OnPlayerExitLobby("MyArena", function(data)
+
+   end)
+
+   ArenaHelper.On("MyArena", "roundend", function(data)
+
+   end)
+end
+
+if ArenaHelper:IsPlayerInArena("MyArena") then
+   for k, v in pairs(ArenaHelper:GetPlayerArena()) do
+      print(k, v)
+   end
+end
+
+RegisterCommand('commandName', function(source, args)
+	if exports.ArenaAPI:IsPlayerInAnyArena() then
+	
+	end
+end, false)
+
+RegisterCommand('commandName', function(source, args)
+	if exports.ArenaAPI:IsPlayerInArena("MyArena") then
+	
+	end
+end, false)
